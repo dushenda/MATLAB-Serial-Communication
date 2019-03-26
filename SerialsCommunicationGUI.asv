@@ -24,9 +24,9 @@ function SerialsCommunicationGUI_OpeningFcn(hObject, eventdata, handles, varargi
 % varargin   command line arguments to simple_g(see VARARGIN)
 handles.output = hObject;
 handles.port_data = 'COM1';
-handles.baud_data = 128000;
 guidata(hObject, handles);
-
+% UIWAIT makes SerialsCommunicationGUI wait for user response (see UIRESUME)
+% uiwait(handles.figSerialComm);
 
 
 % --- Outputs from this function are returned to the command line.
@@ -46,16 +46,6 @@ function btnOpenPort_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 set(hObject,'string',handles.port_data);
-set(handles.txtNotify,'string',['你打开了',handles.port_data,'端口,',...
-                                '波特率为',num2str(handles.baud_data)]);
-
-% --- Executes on button press in btnClosePort.
-function btnClosePort_Callback(hObject, eventdata, handles)
-% hObject    handle to btnClosePort (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% Determine the selected data set.
-set(handles.txtNotify,'string','当前未打开任何串口');
 
 % --- Executes on selection change in mnChoosePort.
 function mnChoosePort_Callback(hObject, eventdata, handles)
@@ -65,12 +55,7 @@ function mnChoosePort_Callback(hObject, eventdata, handles)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns mnChoosePort contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from mnChoosePort
-str = get(hObject, 'String');
-val = get(hObject,'Value');
-% 判断选了哪个端口
-handles.port_data = getPort(str{val});
-% 保存句柄结构
-guidata(hObject,handles);
+
 
 % --- Executes during object creation, after setting all properties.
 function mnChoosePort_CreateFcn(hObject, eventdata, handles)
@@ -85,6 +70,30 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
+% --- Executes on button press in btnClosePort.
+function btnClosePort_Callback(hObject, eventdata, handles)
+% hObject    handle to btnClosePort (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% Determine the selected data set.
+str = get(hObject, 'String');
+val = get(hObject,'Value');
+% 判断选了哪个端口
+switch str%{val}
+case 'COM1' 
+   handles.port_data = 'COM1';
+case 'COM2' 
+   handles.port_data = 'COM2';
+case 'COM3' 
+   handles.port_data = 'COM3';
+case 'COM4' 
+   handles.port_data = 'COM4';
+case 'COM5' 
+   handles.port_data = 'COM5';
+end
+% 保存句柄结构
+guidata(hObject,handles)
+
 % --- Executes on selection change in mnChooseBaud.
 function mnChooseBaud_Callback(hObject, eventdata, handles)
 % hObject    handle to mnChooseBaud (see GCBO)
@@ -93,12 +102,6 @@ function mnChooseBaud_Callback(hObject, eventdata, handles)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns mnChooseBaud contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from mnChooseBaud
-str = get(hObject, 'String');
-val = get(hObject,'Value');
-% 判断选了哪个波特率
-handles.baud_data = getBaud(str{val});
-% 保存句柄结构
-guidata(hObject,handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -123,3 +126,4 @@ function btnSaveFile_Callback(hObject, eventdata, handles)
 
 % --- Executes during object creation, after setting all properties.
 function figSerialComm_CreateFcn(hObject, eventdata, handles)
+myDateTime = datetime('now');

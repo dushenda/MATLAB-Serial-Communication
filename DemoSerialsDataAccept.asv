@@ -6,13 +6,13 @@ set(s,'BaudRate',9600); % 设置波特率为 9600
 fopen(s);            % 打开端口
 % 读取数据并保存至元胞数组 A
 % j=1;
-% for i=1:1:5
+for i=1:1:5
 fprintf(s,'*IDN?');
 out = fscanf(s);
-% A(i)=cellstr(out);
+A(i)=cellstr(out);
 disp(out)
 % j=j+1;
-% end
+end
 fclose(s);
 delete(s)
 clear s
@@ -38,8 +38,7 @@ DataTable.UTCTime = cellfun(@getTime,DataTable.UTCTime,...
                             'UniformOutput',false);
 DataTable.TriggerTime = cellfun(@getTriggerTime,DataTable.TriggerTime,...
                                 'UniformOutput',false);
-DataTable.Power = cellfun(@getPower,DataTable.Power,...
-                          'UniformOutput',false);
+DataTable.Power = cellfun(@getPower,DataTable.PowerBefore);
 % else
 %     disp('data is not security');
 % end

@@ -45,9 +45,25 @@ function btnOpenPort_Callback(hObject, eventdata, handles)
 % hObject    handle to btnOpenPort (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+% 显示提示信息
 set(hObject,'string',handles.port_data);
 set(handles.txtNotify,'string',['你打开了',handles.port_data,'端口,',...
-                                '波特率为',num2str(handles.baud_data)]);
+                                '波特率为',num2str(handles.baud_data)]);                            
+% 配置串口属性，打开串口接收数据
+% delete(instrfindall)                         % 关闭前面占用的端口
+% s = serial(handles.port_data);               % 设置端口
+% set(s,'BaudRate',handles.baud_data);         % 设置波特率
+% fopen(s);                                    % 打开端口
+% i=1;
+% while(1)                                     % 接收数据到元胞数组 A
+%     fprintf(s,'*IDN?');
+%     out = fscanf(s);
+%     A{i}=cellstr(out);
+%     i=i+1;
+%     
+% end
+
+
 
 % --- Executes on button press in btnClosePort.
 function btnClosePort_Callback(hObject, eventdata, handles)
@@ -55,7 +71,24 @@ function btnClosePort_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 % Determine the selected data set.
+% 关闭串口并且显示提示信息
 set(handles.txtNotify,'string','当前未打开任何串口');
+% fclose(s);
+% delete(s)
+% clear s
+% delete(instrfindall)                         % 关闭前面占用的端口
+
+% --- Executes on button press in btnSaveFile.
+function btnSaveFile_Callback(hObject, eventdata, handles)
+% hObject    handle to btnSaveFile (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% set(handles.tblShowData,'Data',randi(100,10,3));
+D = {1,2,3,4,5,6,7,8};
+DTable = cell2table(D);
+Dcell = table2cell(DTable);
+set(handles.tblShowData,'Data',Dcell);
+
 
 % --- Executes on selection change in mnChoosePort.
 function mnChoosePort_Callback(hObject, eventdata, handles)
@@ -113,12 +146,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-
-% --- Executes on button press in btnSaveFile.
-function btnSaveFile_Callback(hObject, eventdata, handles)
-% hObject    handle to btnSaveFile (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 
 % --- Executes during object creation, after setting all properties.

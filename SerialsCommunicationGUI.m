@@ -23,13 +23,12 @@ function SerialsCommunicationGUI_OpeningFcn(hObject, eventdata, handles, varargi
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to simple_g(see VARARGIN)
 handles.output = hObject;
+% 传递端口和波特率设置数据
 handles.port_data = 'COM1';
 handles.baud_data = 128000;
-% 显示时间
-handles.timer =  timer;
-set(handles.timer,'ExecutionMode','FixedRate');
-set(handles.timer,'Period',1);
-set(handles.timer,'TimerFcn',{@disptime,handles});
+% 显示时间，设置定时器属性，每秒触发调用 dispTime函数
+handles.timer =  timer('Period',1,'TimerFcn',{@dispTime,handles},...
+    'BusyMode','queue','ExecutionMode','fixedRate');
 start(handles.timer);
 guidata(hObject, handles);
 
@@ -48,35 +47,23 @@ varargout{1} = handles.output;
 
 % --- Executes on button press in btnOpenPort.
 function btnOpenPort_Callback(hObject, eventdata, handles)
-% hObject    handle to btnOpenPort (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+val = get(hObject,'value');
+if ~val
 % 显示提示信息
-set(hObject,'string',handles.port_data);
-set(handles.txtNotify,'string',['你打开了',handles.port_data,'端口,',...
-                                '波特率为',num2str(handles.baud_data)]);                            
-% 配置串口属性，打开串口接收数据
-% delete(instrfindall)                         % 关闭前面占用的端口
-% s = serial(handles.port_data);               % 设置端口
-% set(s,'BaudRate',handles.baud_data);         % 设置波特率
-% fopen(s);                                    % 打开端口
-% i=1;
-% while(1)                                     % 接收数据到元胞数组 A
-%     fprintf(s,'*IDN?');
-%     out = fscanf(s);
-%     A{i}=cellstr(out);
-%     i=i+1;
-%     
+    set(hObject,'string','关闭串口');
+    set(handles.txtNotify,'string',['你打开了',handles.port_data,'端口,',...
+                                    '波特率为',num2str(handles.baud_data)]);
+else
+    set(hObject,'string','打开串口');
+    set(handles.txtNotify,'string','串口已被关闭');
+end
+% if(get(hObject,))
 % end
 
 
 
 % --- Executes on button press in btnClosePort.
 function btnClosePort_Callback(hObject, eventdata, handles)
-% hObject    handle to btnClosePort (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% Determine the selected data set.
 % 关闭串口并且显示提示信息
 set(handles.txtNotify,'string','当前未打开任何串口');
 % fclose(s);
@@ -86,10 +73,6 @@ set(handles.txtNotify,'string','当前未打开任何串口');
 
 % --- Executes on button press in btnSaveFile.
 function btnSaveFile_Callback(hObject, eventdata, handles)
-% hObject    handle to btnSaveFile (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% set(handles.tblShowData,'Data',randi(100,10,3));
 D = {1,2,3,4,5,6,7,8};
 DTable = cell2table(D);
 Dcell = table2cell(DTable);
@@ -157,5 +140,17 @@ end
 % --- Executes during object creation, after setting all properties.
 function figSerialComm_CreateFcn(hObject, eventdata, handles)
 
-function disptime(hObject, evendata, handles)
-set(handles.txtTime,'String',datestr(datetime('now')));
+function dispTime(hObject, evendata, handles)
+set(handles.txtTime,'String',datestr(now));
+
+
+% --- Executes when user attempts to close figSerialComm.
+function figSerialComm_CloseRequestFcn(hObject, eventdata, handles)
+% hObject    handle to figSerialComm (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: delete(hObject) closes the figure
+% delete(handles.timer);
+stop(handles.timer);
+delete(hObject);

@@ -1,16 +1,25 @@
 clear;clc;
 delete(instrfindall) % 关闭前面占用的端口，这句很重要 
 %% 从串口读取数据
-s = serial('COM2');  % 设置端口为 COM2
-set(s,'BaudRate',9600); % 设置波特率为 9600
-fopen(s);            % 打开端口
-% 读取数据并保存至元胞数组 A
-% j=1;
-% for i=1:1:5
+s = serial('COM2');
+s.BytesAvailableFcnMode = 'terminator';
+s.BytesAvailableFcn = @instrcallback;
+fopen(s);
 fprintf(s,'*IDN?');
 out = fscanf(s);
-% A(i)=cellstr(out);
 disp(out)
+% s.BytesAvailableFcn = @disp(out);
+% 
+% s = serial('COM2');  % 设置端口为 COM2
+% set(s,'BaudRate',9600); % 设置波特率为 9600
+% fopen(s);            % 打开端口
+% % 读取数据并保存至元胞数组 A
+% % j=1;
+% % for i=1:1:5
+% fprintf(s,'*IDN?');
+% out = fscanf(s);
+% % A(i)=cellstr(out);
+% disp(out)
 % j=j+1;
 % end
 fclose(s);

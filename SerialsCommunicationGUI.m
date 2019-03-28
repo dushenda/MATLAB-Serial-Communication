@@ -25,6 +25,12 @@ function SerialsCommunicationGUI_OpeningFcn(hObject, eventdata, handles, varargi
 handles.output = hObject;
 handles.port_data = 'COM1';
 handles.baud_data = 128000;
+% œ‘ æ ±º‰
+handles.timer =  timer;
+set(handles.timer,'ExecutionMode','FixedRate');
+set(handles.timer,'Period',1);
+set(handles.timer,'TimerFcn',{@disptime,handles});
+start(handles.timer);
 guidata(hObject, handles);
 
 
@@ -150,3 +156,6 @@ end
 
 % --- Executes during object creation, after setting all properties.
 function figSerialComm_CreateFcn(hObject, eventdata, handles)
+
+function disptime(hObject, evendata, handles)
+set(handles.txtTime,'String',datestr(datetime('now')));

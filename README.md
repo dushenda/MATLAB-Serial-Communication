@@ -192,6 +192,18 @@ writetable(DataTable,file);
 
 ![](./img/Data.png)
 
+还有值得说一句的是，可以改变软件运行图标的方法。这边需要使用 `warning off all` 的原因是因为 `JavaFram`属性在后期的 MathWork® 公司会被弃用，现在是可以使用的，只不过会报警告，无伤大雅，眼不见心不烦。
+
+```matlab
+warning off all;
+javaFram = get(hObject,'JavaFrame');
+javaFram.setFigureIcon(javax.swing.ImageIcon('./img/icon.png'));
+```
+
+最后修改图标完成之后是这样的。
+
+![](./img/修改图标.png)
+
 ## 数据计算
 
 这个暂时含没有要数据处理的需求，可能以后会有，但是凭借 MATLAB 的强大的科学计算能力，应该做一些数据计算可视化不在话下。

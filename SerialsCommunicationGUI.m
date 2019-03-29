@@ -24,6 +24,9 @@ function SerialsCommunicationGUI_OpeningFcn(hObject, ~, handles, varargin)
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to simple_g(see VARARGIN)
 handles.output = hObject;
+warning off all;
+javaFram = get(hObject,'JavaFrame');
+javaFram.setFigureIcon(javax.swing.ImageIcon('./img/icon.png'));
 set(handles.tblShowData,'ColumnWidth',{120});
 data = get(handles.tblShowData,'Data');
 data([1:4],:) = [];

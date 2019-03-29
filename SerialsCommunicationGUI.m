@@ -15,7 +15,8 @@ if nargout
 else
     gui_mainfcn(gui_State, varargin{:});
 end
-% --- Executes just before simple_gis made visible.
+
+% 打开时候完成的操作在这~~
 function SerialsCommunicationGUI_OpeningFcn(hObject, ~, handles, varargin)
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
@@ -24,6 +25,9 @@ function SerialsCommunicationGUI_OpeningFcn(hObject, ~, handles, varargin)
 % varargin   command line arguments to simple_g(see VARARGIN)
 handles.output = hObject;
 set(handles.tblShowData,'ColumnWidth',{120});
+data = get(handles.tblShowData,'Data');
+data([1:4],:) = [];
+set(handles.tblShowData,'Data',data);
 % 传递端口和波特率设置数据
 str = get(handles.mnChoosePort, 'String');
 val = get(handles.mnChoosePort,'Value');
@@ -79,6 +83,18 @@ guidata(hObject, handles);
 
 % --- Executes on button press in btnSaveFile.
 function btnSaveFile_Callback(hObject, eventdata, handles)
+[FileName,PathName] = uiputfile({'*.txt';'*.csv'},...
+    '导出数据','测量数据.txt');
+Data = get(handles.tblShowData,'Data');
+DataTable = cell2table(Data);
+VarName = {'Start','Address','Latitude','Longitude','UTCTime',...
+            'TriggerTime','Power','End','DataIntegrity','Addition'};
+DataTable.Properties.VariableNames = VarName;
+file = strcat(PathName,FileName);
+writetable(DataTable,file);
+% 2019a版本有这个函数 writecell
+% writecell(Data,file,'Delimiter',',')
+
 
 
 % D = {1,2,3,4,5,6,7,8};

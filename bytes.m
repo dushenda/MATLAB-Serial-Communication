@@ -1,11 +1,5 @@
-function bytes(obj,events,handles)
-% str = fgets(obj);
-% % handles.hasData = 1;
-% disp(str);
-% disp('bytes called');
+function bytes(obj,~,handles)
 str = fgetl(obj);
-disp(str);
-% str = 'START,A017,3031.07100N,10404.00096E,181213101431,658038464,0295,STOP';
 oldData = get(handles.tblShowData,'Data');
 % 正则表达式分割数组
 strCell = regexp(str,',','split');
@@ -26,7 +20,6 @@ end
 add = '';
 newRow = {Start,Address,PositionLatStr,PositionLonStr,myTime,...
     TriggerTime,Power,Stop,Iffull,add};
-% newRow = {1,2,3,4,5,6,7,8,9,10};
 newData = [oldData; newRow];
 set(handles.tblShowData,'Data',newData);
 end

@@ -124,8 +124,74 @@ GUI 的设计大概如下，当然还会再添加一些其他的有关串口通�
 
 ![](./img/元胞数组数据保存形式.bmp)
 
-表格存储数据如下
+今天终于把这些都完成了。
 
+<!--DateTime:2019/3/29 20:56:34-->
 
+最后的成品是这样的，当一打开软件的时候，会有一个空白的表格，一个选择端口，一个选择波特率，一个开关串口的 `ToggleButton` 和一个保存文件的 `PushButton` 按钮。
+
+在串口关闭的时候，串口开闭按钮的背景色 `BackgroundColor` 是绿色的，这里是直接在 GUIDE 里面设置的 RGB 的值，这个值只要是鼠标放上去就会显示出来，然后把这个颜色值拿出来放在关闭的时候触发就可以了，当然一进去的时候串口肯定是关闭状态的。
+
+![](./img/Close.png)
+
+打开串口之后是这样的。串口的状态按钮背景色 `BackgroundColor` 变成了红色，而且按钮上面的字符 `String` 也随之改变，这个实现起来也是很简单的。使用一条 `set` 语句就可以了，需要注意的是这里的所有 `uicontrol` （UI控件）都是handles(结构体)的子类（不知道怎么说这个关系，就是访问的时候需要加上 `.`）。例如：
+
+```matlab
+set(handles.tblShowData,'ColumnWidth',{120});
+data = get(handles.tblShowData,'Data');
+data([1:4],:) = [];
+set(handles.tblShowData,'Data',data);
+% 传递端口和波特率设置数据
+str = get(handles.mnChoosePort, 'String');
+val = get(handles.mnChoosePort,'Value');
+% 判断选了哪个端口
+handles.port_data = getPort(str{val});
+str = get(handles.mnChooseBaud, 'String');
+val = get(handles.mnChooseBaud,'Value');
+```
+
+这里的 `tblShowData` 是表格的 `tag`（table show data），`mnChoosePort，mnChooseBaud` ，分别是选择端口和波特率的下拉菜单。
+
+![](./img/Open.png)
+
+打开串口，如果收到数据，就会显示在表格上，这个是通过一个时间机制来实现的，这是初始化串口的代码，这里面的最后一句是注册了时间，说明在 `BytesAvailable` 发生的时候触发 `BytesAvailableFcn` 函数 `bytes` ，这个 `@`是代表取到函数句柄的意思， `handles，obj，events`都会被传入，但是这里只是看到了一个 `handles`，那是因为在触发时间的时候已经可以知道是哪个对象传入和哪个时间触发，在这里就不用重复写了。
+
+```matlab
+handles.scom = serial(handles.port_data);       % 新建串口
+set(handles.scom,'BaudRate',handles.baud_data); % 设置波特率
+set(handles.scom,'BytesAvailableFcnCount',69);
+set(handles.scom,'BytesAvailableFcnMode','byte');
+set(handles.scom,'BytesAvailableFcn',{@bytes,handles});
+```
+
+之后在 `saveFile`按钮的回调函数下面写了一个存储到文件的功能，这个实现也不是很难。
+
+只需要首先调用 `uiputfile`函数说明需要打开一个写文件窗口，之后再把文件写入。
+
+这里需要注意的是文件写入有个问题，其实在 **MATLAB2019a** 里面已经有了一个叫做 `cellwrite`函数了，这个函数可以直接把元胞数组的数据写入到其他格式的文件中，格式在下面的代码的注释里面也体现了。但是我现在的版本还差半个，是 **MATLAB2018b** ，所以这个函数无法使用，那么只要使用原来的函数来实现功能。
+
+这里我觉得一种比较简便的方法是使用 `cell2table` 函数将元胞数组的数据转化为表格数据，最终使用表格数据有的写文件函数 `writetable` 把数据写到文件里面，表格数据的导出会将表格的列名称也导出，但是列名称在表格中实际上是属性名，所以不允许出现中文，这里就使用了英文来代替。
+
+```matlab
+[FileName,PathName] = uiputfile({'*.txt';'*.csv'},...
+    '导出数据','测量数据.txt');
+Data = get(handles.tblShowData,'Data');
+DataTable = cell2table(Data);
+VarName = {'Start','Address','Latitude','Longitude','UTCTime',...
+            'TriggerTime','Power','End','DataIntegrity','Addition'};
+DataTable.Properties.VariableNames = VarName;
+file = strcat(PathName,FileName);
+writetable(DataTable,file);
+% 2019a版本有这个函数 writecell
+% writecell(Data,file,'Delimiter',',')
+```
+
+![](./img/SaveFile.png)
+
+最终导出的文件格式其实可以有很多，只要设置好数据的格式就能导出需要的格式，这里仅写了两种格式导出功能`.csv`和 `.txt`，最终的写出来的数据是这样的。这边是使用 MATLAB 顺便打开，结果就是这样的。
+
+![](./img/Data.png)
 
 ## 数据计算
+
+这个暂时含没有要数据处理的需求，可能以后会有，但是凭借 MATLAB 的强大的科学计算能力，应该做一些数据计算可视化不在话下。

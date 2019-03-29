@@ -19,19 +19,14 @@ str = 'START,A017,3031.07100N,10404.00096E,181213101431,658038464,0295,STOP';
 % 正则表达式分割数组
 strCell = regexp(str,',','split');
 Start = strCell{1};
-Address = getAddressCode(strCell{2});
+address = getAddressCode(strCell{2});
 [PositionLatStr,~] = getLatitude(strCell{3});
 [PositionLonStr,~] = getLongitude(strCell{4});
-myTime = datestr(getTime(strCell{5}));
+myTime = getTime(strCell{5});
 TriggerTime = getTriggerTime(strCell{6});
 Power = getPower(strCell(7));
 Stop = strCell{8};
-if (strcmp(Stop,'STOP') && strcmp(Start,'START'))
-    Iffull = '完整';
-end
-add = '';
-msg = {Start,Address,PositionLatStr,PositionLonStr,myTime,...
-    TriggerTime,Power,Stop,Iffull,add};
+if S
 
 ACell = regexp(A,',','split');
 DataCellArr = vertcat(ACell{:});

@@ -1,2 +1,2 @@
-function []=getData()
+function []=getData(str)
 end

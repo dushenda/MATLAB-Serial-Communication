@@ -1,0 +1,7 @@
+function  dataDisp(obj,events,handles)
+% bytes(obj,events,handles);
+set(handles.txtTime,'String',datestr(now));
+disp('dataDisp called');
+data
+end
+

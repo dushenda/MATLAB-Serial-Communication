@@ -23,7 +23,6 @@ function SerialsCommunicationGUI_OpeningFcn(hObject, ~, handles, varargin)
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to simple_g(see VARARGIN)
 handles.output = hObject;
-set(handles.tblShowData,'ColumnWidth',{120});
 % 传递端口和波特率设置数据
 str = get(handles.mnChoosePort, 'String');
 val = get(handles.mnChoosePort,'Value');
@@ -57,9 +56,12 @@ if val==1            % 串口打开状态，显示关闭字符
 delete(instrfindall)                            % 关闭前面占用的端口，这句很重要 
 handles.scom = serial(handles.port_data);       % 新建串口
 set(handles.scom,'BaudRate',handles.baud_data); % 设置波特率
-set(handles.scom,'BytesAvailableFcnCount',69);
+set(handles.scom,'BytesAvailableFcnCount',70);
 set(handles.scom,'BytesAvailableFcnMode','byte');
 set(handles.scom,'BytesAvailableFcn',{@bytes,handles});
+ 
+% set(handles.scom,'TimerPeriod',1);
+% set(handles.scom,'TimerFcn',{@dataDisp,handles});
 try                                             % 异常捕捉
     fopen(handles.scom);
 catch
@@ -79,12 +81,14 @@ guidata(hObject, handles);
 
 % --- Executes on button press in btnSaveFile.
 function btnSaveFile_Callback(hObject, eventdata, handles)
+oldData = get(handles.t,'Data');
+newData = [oldData; newRow];
+set(hTable,'Data',newData)
 
-
-% D = {1,2,3,4,5,6,7,8};
-% DTable = cell2table(D);
-% Dcell = table2cell(DTable);
-% handles.tblShowData = [handles.tblShowData;Dcell];
+D = {1,2,3,4,5,6,7,8};
+DTable = cell2table(D);
+Dcell = table2cell(DTable);
+handles.tblShowData = [handles.tblShowData;Dcell];
 % set(handles.tblShowData,'Data',Dcell);
 
 

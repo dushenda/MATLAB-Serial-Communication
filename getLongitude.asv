@@ -3,8 +3,9 @@ function [PositionLonStr,PositionLonNum] = getLongitude(LongitudeStr)
 NumStr = LongitudeStr(1:end-1);
 Num = str2double(NumStr);
 NumDeg = fix(Num/100);
-NumMin = fix(Num-NumDeg*100);
-NumSec = (Num - floor(Num))*100;
+NumMin = fix(Num-NumDeg);
+Num
+Num
 LocStr = LongitudeStr(end);
 if(LocStr == 'E')
     Loc = '¶«¾­';
@@ -13,7 +14,6 @@ elseif(LocStr == 'W')
 else
     disp('not in Earth');
 end
-PositionLonStr = strcat(Loc,num2str(NumDeg),'¡ã',num2str(NumMin),...
-    '''',num2str(NumSec),'''''');
-PositionLonNum = NumDeg+NumMin/60+NumSec/3600;
+PositionLonStr = strcat(Loc,NumStr);
+PositionLonNum = str2double(NumStr);
 end

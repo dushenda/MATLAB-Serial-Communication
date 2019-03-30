@@ -18,9 +18,12 @@ else
     Iffull = '不完整';
 end
 add = '';
+% 添加数组数据进表格
 newRow = {Start,Address,PositionLatStr,PositionLonStr,myTime,...
     TriggerTime,Power,Stop,Iffull,add};
 newData = [oldData; newRow];
+% 输入数据进行排序
+newData = sortrows(newData,2,'descend');
 set(handles.tblShowData,'Data',newData);
 end
 

@@ -1,1 +1,0 @@
-Start,Address,Latitude,Longitude,UTCTime,TriggerTime,Power,End,DataIntegrity,Addition

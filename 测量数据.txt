@@ -1,0 +1,5 @@
+Start,Address,Latitude,Longitude,UTCTime,TriggerTime,Power,End,DataIntegrity,Addition
+START,A组017号,北纬30°31'7.1'',东经104°4'0.096'',13-Dec-2018 10:14:31,"658ns,38ns,464ns",295,STOP,完整,
+START,A组017号,北纬30°31'7.1'',东经104°4'0.096'',13-Dec-2018 10:14:31,"658ns,38ns,464ns",295,STOP,完整,
+START,A组017号,北纬30°31'7.1'',东经104°4'0.096'',13-Dec-2018 10:14:31,"658ns,38ns,464ns",295,STOP,完整,
+START,A组017号,北纬30°31'7.1'',东经104°4'0.096'',13-Dec-2018 10:14:31,"658ns,38ns,464ns",295,STOP,完整,

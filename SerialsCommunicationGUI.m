@@ -29,8 +29,11 @@ javaFram = get(hObject,'JavaFrame');
 javaFram.setFigureIcon(javax.swing.ImageIcon('./img/icon.png'));
 set(handles.tblShowData,'ColumnWidth',{120});
 data = get(handles.tblShowData,'Data');
-data([1:4],:) = [];
+if ~isempty(data)
+data(1:4,:) = [];
 set(handles.tblShowData,'Data',data);
+end
+set(handles.tblShowData,'RearrangeableColumns','on');
 % 传递端口和波特率设置数据
 str = get(handles.mnChoosePort, 'String');
 val = get(handles.mnChoosePort,'Value');
@@ -84,6 +87,7 @@ closePort(hObject,handles);
 end
 guidata(hObject, handles);
 
+
 % --- Executes on button press in btnSaveFile.
 function btnSaveFile_Callback(hObject, eventdata, handles)
 [FileName,PathName] = uiputfile({'*.txt';'*.csv'},...
@@ -97,14 +101,6 @@ file = strcat(PathName,FileName);
 writetable(DataTable,file);
 % 2019a版本有这个函数 writecell
 % writecell(Data,file,'Delimiter',',')
-
-
-
-% D = {1,2,3,4,5,6,7,8};
-% DTable = cell2table(D);
-% Dcell = table2cell(DTable);
-% handles.tblShowData = [handles.tblShowData;Dcell];
-% set(handles.tblShowData,'Data',Dcell);
 
 
 % --- Executes on selection change in mnChoosePort.
